@@ -1,11 +1,13 @@
-const carrito = document.getElementById("carrito");
-const cursos = document.getElementById("lista-cursos");
-const listaCursos = document.querySelector("#lista-carrito tbody");
+const carrito = document.getElementById("carrito"),
+  cursos = document.getElementById("lista-cursos"),
+  listaCursos = document.querySelector("#lista-carrito tbody"),
+  vaciarCarritoBTN = document.getElementById("vaciar-carrito");
 
 eventListeners();
 function eventListeners() {
   cursos.addEventListener("click", comprarCurso);
   carrito.addEventListener("click", eliminarCurso);
+  vaciarCarritoBTN.addEventListener("click", vaciarCarrito);
 }
 
 function comprarCurso(e) {
@@ -45,7 +47,19 @@ function insertarCarrito(curso) {
 
 function eliminarCurso(e) {
   e.preventDefault();
+  // Si el elemento donde se ha hecho click contiene la clase borrar-curso, se toma el padre del padre y se elimina.
   if (e.target.classList.contains("borrar-curso")) {
     e.target.parentElement.parentElement.remove();
   }
+}
+
+function vaciarCarrito() {
+  // Se recorrerán los elementos del tbody mientras exista un elemento hijo. Entonces lo removerá
+  while (listaCursos.firstChild) {
+    listaCursos.removeChild(listaCursos.firstChild);
+  }
+  return false;
+
+  /* //Forma corta 
+  listaCursos.innerHTML = ''; */
 }
