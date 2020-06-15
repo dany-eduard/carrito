@@ -5,6 +5,7 @@ const listaCursos = document.querySelector("#lista-carrito tbody");
 eventListeners();
 function eventListeners() {
   cursos.addEventListener("click", comprarCurso);
+  carrito.addEventListener("click", eliminarCurso);
 }
 
 function comprarCurso(e) {
@@ -40,4 +41,11 @@ function insertarCarrito(curso) {
     </td>
   `;
   listaCursos.appendChild(row);
+}
+
+function eliminarCurso(e) {
+  e.preventDefault();
+  if (e.target.classList.contains("borrar-curso")) {
+    e.target.parentElement.parentElement.remove();
+  }
 }
