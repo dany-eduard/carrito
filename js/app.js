@@ -43,6 +43,7 @@ function insertarCarrito(curso) {
     </td>
   `;
   listaCursos.appendChild(row);
+  guardarCursoLocalStorage(curso);
 }
 
 function eliminarCurso(e) {
@@ -62,4 +63,24 @@ function vaciarCarrito() {
 
   /* //Forma corta 
   listaCursos.innerHTML = ''; */
+}
+
+function guardarCursoLocalStorage(curso) {
+  let cursos;
+
+  cursos = obtenerCursoLocalStorage();
+  cursos.push(curso); //Se agrega el curso seleccionado al arreglo
+  localStorage.setItem("cursos", JSON.stringify(cursos)); //Se convierte el vector a string y se guarda como JSON en LS
+}
+
+function obtenerCursoLocalStorage() {
+  let cursosLS;
+  //Se comprueba que existan elementos en Local Storage
+  if (localStorage.getItem("cursos") === null) {
+    cursosLS = []; //Si NO los hay crea un arreglo
+  } else {
+    // Si los hay solo los convierte en JSON
+    cursosLS = JSON.parse(localStorage.getItem("cursos"));
+  }
+  return cursosLS;
 }
