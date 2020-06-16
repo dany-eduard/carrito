@@ -8,6 +8,7 @@ function eventListeners() {
   cursos.addEventListener("click", comprarCurso);
   carrito.addEventListener("click", eliminarCurso);
   vaciarCarritoBTN.addEventListener("click", vaciarCarrito);
+  document.addEventListener("DOMContentLoaded", leerLocalStorage);
 }
 
 function comprarCurso(e) {
@@ -48,10 +49,14 @@ function insertarCarrito(curso) {
 
 function eliminarCurso(e) {
   e.preventDefault();
+  let curso, cursoID;
   // Si el elemento donde se ha hecho click contiene la clase borrar-curso, se toma el padre del padre y se elimina.
   if (e.target.classList.contains("borrar-curso")) {
     e.target.parentElement.parentElement.remove();
+    curso = e.target.parentElement.parentElement;
+    cursoID = curso.querySelector("a").getAttribute("data-id");
   }
+  eliminarCursoLocalStorage(cursoID);
 }
 
 function vaciarCarrito() {
@@ -59,16 +64,16 @@ function vaciarCarrito() {
   while (listaCursos.firstChild) {
     listaCursos.removeChild(listaCursos.firstChild);
   }
-  return false;
 
   /* //Forma corta 
   listaCursos.innerHTML = ''; */
+
+  vaciarLocalStorage();
+  return false;
 }
 
 function guardarCursoLocalStorage(curso) {
-  let cursos;
-
-  cursos = obtenerCursoLocalStorage();
+  let cursos = obtenerCursoLocalStorage();
   cursos.push(curso); //Se agrega el curso seleccionado al arreglo
   localStorage.setItem("cursos", JSON.stringify(cursos)); //Se convierte el vector a string y se guarda como JSON en LS
 }
@@ -83,4 +88,39 @@ function obtenerCursoLocalStorage() {
     cursosLS = JSON.parse(localStorage.getItem("cursos"));
   }
   return cursosLS;
+}
+
+function leerLocalStorage() {
+  let cursosLS = obtenerCursoLocalStorage();
+
+  cursosLS.forEach(function (curso) {
+    //Se agregan lso datos en el template uno a uno
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <img src="${curso.imagen}" width=100> 
+      </td>
+      <td>${curso.titulo}</td>
+      <td>${curso.precio}</td>
+      <td>
+        <a href="#" class="borrar-curso" data-id="${curso.id}"> x </a>
+      </td>
+    `;
+    listaCursos.appendChild(row);
+  });
+}
+
+function eliminarCursoLocalStorage(cursoID) {
+  let cursosLS = obtenerCursoLocalStorage();
+
+  cursosLS.forEach(function (cursoLS, index) {
+    if (cursoLS.id === cursoID) {
+      cursosLS.splice(index, 1);
+    }
+  });
+  localStorage.setItem("cursos", JSON.stringify(cursosLS));
+}
+
+function vaciarLocalStorage() {
+  localStorage.clear();
 }
